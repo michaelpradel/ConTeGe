@@ -13,11 +13,15 @@ at Conference on Programming Language Design and Implementation (PLDI), 2012
 
 ### An approach for automatic substitutability testing that finds various bugs in widely used Java classes
 
+See [this page](http://mp.binaervarianz.de/icse2013/) for details.
+
 [*Automatic Testing of Sequential and Concurrent Substitutability*](http://mp.binaervarianz.de/icse2013.pdf)  
 by Michael Pradel and Thomas R. Gross  
 at International Conference on Software Engineering (ICSE), 2013
 
 ### *SpeedGun*, a performance regression testing tool for thread-safe classes
+
+See the [SpeedGun branch](https://github.com/michaelpradel/ConTeGe/tree/SpeedGun) for details.
 
 [*Performance Regression Testing of Concurrent Classes*](http://mp.binaervarianz.de/issta2014.pdf)  
 by Michael Pradel, Markus Huggler, and Thomas R. Gross  
