@@ -40,7 +40,7 @@ class Prefix(global: GlobalState) extends AbstractCallSequence[Prefix](global) {
     	        else false
     	    }
     	    
-    		result.appendCall(call.atom, call.receiver, call.args, call.retVal, producesCutVar)
+    		result.appendCall(call.atom, call.receiver, call.args, call.retVal, call.downcastType, producesCutVar)
     	})
     	result.cutVariable = cutVariable
     	result
@@ -51,6 +51,13 @@ class Prefix(global: GlobalState) extends AbstractCallSequence[Prefix](global) {
 		val that = other.asInstanceOf[Prefix] 
 		if (this.cutVariable == null || that.cutVariable == null) return false
 		this.toString == that.toString && this.id(this.cutVariable) == that.id(that.cutVariable)
+	}
+	
+	def copyWithOracleClassReceiver(oracleClass: String) = {
+	    val result = new Prefix(global)
+    	addCallsAndAdaptType(oracleClass, result, cutVariable)
+    	result.cutVariable = cutVariable
+    	result
 	}
 	
 	override def endsWithCUTInstantiation = {

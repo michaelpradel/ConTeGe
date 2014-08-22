@@ -39,6 +39,28 @@ class SequenceExecutor(stats: Stats, config: Config) {
 		} else throw new IllegalArgumentException("unexpected subtype "+seq.getClass.getName)
 	}
 	
+	def executeWithOutputVector(seq: AbstractCallSequence[_]): (Option[Throwable], OutputVector) = {
+		if (seq.isInstanceOf[Prefix]) {
+			stats.executedSequences.incr
+			if (config.callClinit) Clinit.reset
+			seq.executeWithOutputVector
+		} else if (seq.isInstanceOf[Suffix]) {
+			val suffix = seq.asInstanceOf[Suffix]
+			stats.executedSequences.incr
+			if (config.callClinit) Clinit.reset
+		
+			val var2Object = Map[Variable, Object]()
+			val outputVector = new OutputVector
+			val (prefixResult, prefixOutputVector) = suffix.prefix.executeWithOutputVector(var2Object, outputVector)
+			if (!prefixResult.isEmpty) {
+				println("prefix fails when used with suffix -- this shouldn't happen...")
+				return (prefixResult, prefixOutputVector)
+			}
+			assert(!var2Object.isEmpty, "At least the CUT object should be here: "+var2Object)
+			suffix.executeWithOutputVector(var2Object, outputVector)
+		} else throw new IllegalArgumentException("unexpected subtype "+seq.getClass.getName)
+	}
+	
 	/**
 	 * Returns None if the execution passes and a message containing the reason for failure otherwise.
 	 */

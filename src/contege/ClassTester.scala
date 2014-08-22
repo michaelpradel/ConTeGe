@@ -91,7 +91,7 @@ class ClassTester(config: Config, stats: Stats, putClassLoader: ClassLoader, put
                             config.checkerListeners.foreach(l => l.updateNbGeneratedTests(nbGeneratedTests))
                             println("Nb generated tests: " + nbGeneratedTests)
 
-                            finalizer.currentTest = Some(TestPrettyPrinter.javaCodeFor(prefix, suffix, otherSuffix, "GeneratedTest"))
+                            finalizer.currentTest = Some(TestPrettyPrinter.javaCodeFor(prefix, suffix, otherSuffix, "GeneratedTest", TestPrettyPrinter.NoOutputVectors))
 
                             tsOracle.analyzeTest(prefix, suffix, otherSuffix)
                         })

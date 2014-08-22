@@ -47,7 +47,7 @@ class PrepareCUTCallTask(prefix: Prefix,
 		val args = new ArrayList[Variable]()
 
 		cutMethod.paramTypes.foreach(typ => {
-			val paramTask = new GetParamTask[Prefix](candidate, typ, global)			
+			val paramTask = new GetParamTask[Prefix](candidate, typ, true, global)			
 			paramTask.run match {
 				case Some(extendedSequence) => {
 					candidate = extendedSequence
@@ -71,7 +71,7 @@ class PrepareCUTCallTask(prefix: Prefix,
 		
 		val extendedCandidate = candidate.copy
 		val receiver = prefix.getCutVariable
-		extendedCandidate.appendCall(cutMethod, Some(receiver), args, retVal)
+		extendedCandidate.appendCall(cutMethod, Some(receiver), args, retVal, None)
 		Some(extendedCandidate)
 	}
 	

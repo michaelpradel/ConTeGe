@@ -15,7 +15,7 @@ class Suffix(val prefix: Prefix, global: GlobalState) extends AbstractCallSequen
 	
 	override def copy = {
 		val result = new Suffix(prefix, global)
-		calls.foreach(call => result.appendCall(call.atom, call.receiver, call.args, call.retVal))
+		calls.foreach(call => result.appendCall(call.atom, call.receiver, call.args, call.retVal, call.downcastType))
     	result
 	}
 
@@ -65,6 +65,12 @@ class Suffix(val prefix: Prefix, global: GlobalState) extends AbstractCallSequen
 		this.prefix.equivalentTo(that.prefix) && this.toString == that.toString
 	}
 
+	def copyWithOracleClassReceiver(oracleClass: String, adaptedPrefix: Prefix) = {
+	    val result = new Suffix(adaptedPrefix, global)
+    	addCallsAndAdaptType(oracleClass, result, prefix.getCutVariable)
+    	result
+	}
+	
 	override def getCutVariable = prefix.getCutVariable
 	
 }

@@ -27,13 +27,16 @@ class RobustConcJPFExecutor(global: GlobalState, putJarPath: String, returnOutpu
     private val jpfExecutor = new JPFSequenceExecutor(global.config, putJarPath)
     
     /**
-     * Returns the errors obtained (empty set means no errors),
+     * First part of returned pair: The errors obtained (empty set means no errors),
      * or None if the result is unknown (e.g. because of a timeout or
      * because the test fails sequentially).
+     * Second part of returned pair: Set of output vectors, or None if the run was inconclusive or
+     * if returnOutputVectors was set to false.
      */
     def executeConcurrently(prefix: Prefix,
 							suffix1: Suffix,
-							suffix2: Suffix): Option[Set[String]] = {
+							suffix2: Suffix,
+							outputConfig: TestPrettyPrinter.OutputConfig): (Option[Set[String]], Option[Set[OutputVector]]) = {
         // run linearizations sequentially
         val interleavings = new SequentialInterleavings(prefix, suffix1, suffix2)
 		var failedSequentially = false
@@ -42,7 +45,7 @@ class RobustConcJPFExecutor(global: GlobalState, putJarPath: String, returnOutpu
 		    global.seqMgr.seqExecutor.execute(interleaving.get) match {
 				case Some(interleavingException) => {
 				    println("Sequential execution gives exception!")
-				    return None
+				    return (None, None)
 				}
 				case None => // ignore, seq. execution succeeds
 			}
@@ -53,6 +56,7 @@ class RobustConcJPFExecutor(global: GlobalState, putJarPath: String, returnOutpu
         val execThread = new Thread() {
             @volatile var runFinished = false
             @volatile var result: Option[Set[String]] = null
+            @volatile var outputVectorsOpt: Option[Set[OutputVector]] = null
             
             override def run = {
                 // redirect stderr and stdout to buffer (afterwards, write everything to stdout)
@@ -64,7 +68,7 @@ class RobustConcJPFExecutor(global: GlobalState, putJarPath: String, returnOutpu
             	System.setErr(new PrintStream(buffer))
 		
             	try {
-            		result = jpfExecutor.executeConcurrently(prefix, suffix1, suffix2)    
+            		result = jpfExecutor.executeConcurrently(prefix, suffix1, suffix2, outputConfig)    
             	} catch {
             		case t: Throwable => { // JPF crashed - result of execution remains unknown
             			result = None
@@ -75,7 +79,30 @@ class RobustConcJPFExecutor(global: GlobalState, putJarPath: String, returnOutpu
             	System.setOut(oldStdOut)
             	System.setErr(oldStdErr)
             	
+            	// if enabled, get output vectors from buffer
             	val bufferContent = buffer.toString
+            	outputVectorsOpt = if (returnOutputVectors) {
+	            	val outputVectors = Set[OutputVector]()
+            	    val lines = bufferContent.split("\n")
+	            	var currentOutputVectorContent: Option[StringBuilder] = None
+            	    lines.foreach(line => {
+	            	    if (line == "OUTPUTVECTOR_BEGIN") {
+	            	        assert(!currentOutputVectorContent.isDefined)
+	            	        currentOutputVectorContent = Some(new StringBuilder)
+	            	    } else if (line == "OUTPUTVECTOR_END") {
+	            	        assert(currentOutputVectorContent.isDefined)
+	            	        if (currentOutputVectorContent.get.size > 0) currentOutputVectorContent.get.deleteCharAt(currentOutputVectorContent.get.size-1) // remove newline at end
+	            	        val outputVector = OutputVector.fromString(currentOutputVectorContent.get.toString)
+	            	        outputVectors.add(outputVector)
+	            	        currentOutputVectorContent = None
+	            	    } else if (currentOutputVectorContent.isDefined) {
+	            	        currentOutputVectorContent.get.append(line+"\n")
+	            	    }
+	            	})
+	            	Some(outputVectors)
+            	} else None
+            	
+            	// write buffer to stdout
             	println(bufferContent)
 
             	assert(result != null)
@@ -87,17 +114,17 @@ class RobustConcJPFExecutor(global: GlobalState, putJarPath: String, returnOutpu
 		if (!execThread.runFinished) {
 		    println("Timeout when running concurrent execution with JPF")
 		    println(prefix+"With suffix1:\n"+suffix1+".. and suffix2:\n"+suffix2)
-			return None   
+			return (None, None)   
 		}
         execThread.result match {
             case Some(errorMsgs) => {
-            	if (errorMsgs.isEmpty) return Some(Set[String]())
+            	if (errorMsgs.isEmpty) return (Some(Set[String]()), execThread.outputVectorsOpt)
                 val filteredErrorMsgs = errorMsgs.filter(m => !m.contains("java.lang.UnsatisfiedLinkError: cannot find native"))
-                if (filteredErrorMsgs.isEmpty) return None // only errors are due to a JPF limitation - inconclusive
-                else return Some(filteredErrorMsgs)
+                if (filteredErrorMsgs.isEmpty) return (None, None) // only errors are due to a JPF limitation - inconclusive
+                else return (Some(filteredErrorMsgs), execThread.outputVectorsOpt)
                 
             }
-            case None => return None  // JPF crashed, inconclusive
+            case None => return (None, None)  // JPF crashed, inconclusive
         }
     }
     

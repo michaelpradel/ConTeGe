@@ -4,6 +4,7 @@ import contege.Timer
 import contege.Config
 import contege.Stats
 import contege.GlobalState
+import contege.PathTesterConfig
 
 /**
  * Some part of work to do for generating tests.
@@ -37,6 +38,7 @@ abstract class Task[CallSequence <: AbstractCallSequence[_]](global: GlobalState
 				}
 			}
 		}
+		println("Reached maxTries ("+maxTries+")")
 		return None
 	}
 	

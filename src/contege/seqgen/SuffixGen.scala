@@ -18,8 +18,8 @@ import contege._
 class SuffixGen(prefix: Prefix, val maxSuffixLength: Int,
                 global: GlobalState) {
 	
-	val cutMethods = if (global.config.selectedCUTMethods.isDefined) {
-		val selected = global.config.selectedCUTMethods.get
+	val cutMethods = if (global.config.selectedCUTMethodsForSuffix.isDefined) {
+		val selected = global.config.selectedCUTMethodsForSuffix.get
 		global.typeProvider.cutMethods.filter(m => selected.contains(m.signature))
 	} else global.typeProvider.cutMethods
 

@@ -10,12 +10,19 @@ import scala.collection.mutable.Set
 import scala.collection.mutable.Map
 import java.util.ArrayList
 import scala.collection.mutable.Set
+import contege.seqexec.OutputVector
 
 object SequencePrinter {
 
-    def callToString(call: Call, id: Variable => String) = {
+    class OutputConfig
+    object NoOutput extends OutputConfig
+    object FillOutputVector extends OutputConfig
+    object FillOutputVectorWithIgnore extends OutputConfig
+    
+    def callToString(call: Call, id: Variable => String, outputConfig: OutputConfig) = {
 		val sb = new StringBuilder
-		sb.append(if (call.retVal.isDefined) "final "+javaType(call.atom.returnType.get)+" "+id(call.retVal.get)+" = " else "")
+		var newVarType = javaType(if (call.downcastType.isDefined) call.downcastType.get else call.atom.returnType.get)
+		sb.append(if (call.retVal.isDefined) "final "+newVarType+" "+id(call.retVal.get)+" = "+(if (call.downcastType.isDefined) "("+call.downcastType.get+") " else "") else "")
 		sb.append(if (call.atom.isConstructor) "new "+javaType(call.atom.declaringType)
 				  else if (call.atom.isStatic) javaType(call.atom.declaringType)+"."+call.atom.methodName
 				  else id(call.receiver.get)+"."+call.atom.methodName)
@@ -36,6 +43,13 @@ object SequencePrinter {
 	    } else {
 	        sb.append(";")
 	    }
+		
+		// add returned value to output vector
+		outputConfig match {
+		    case NoOutput => // do nothing
+		    case FillOutputVector => sb.append("\noutputVector.add("+id(call.retVal.get)+");\n")
+		    case FillOutputVectorWithIgnore => sb.append("\noutputVector.add(\""+OutputVector.IgnoreString+"\");\n")
+		}
 		
 		sb.toString
 	}

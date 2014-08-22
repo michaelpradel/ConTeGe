@@ -35,12 +35,13 @@ class JPFSequenceExecutor(config: Config, putJarPath: String) {
 
     def executeConcurrently(prefix: Prefix,
         suffix1: Suffix,
-        suffix2: Suffix): Option[Set[String]] = {
+        suffix2: Suffix,
+        outputConfig: TestPrettyPrinter.OutputConfig): Option[Set[String]] = {
         execCtr += 1
         cleanWorkingDir()
 
         // generate .java file
-        val javaFile = generateJavaFile(prefix, suffix1, suffix2)
+        val javaFile = generateJavaFile(prefix, suffix1, suffix2, outputConfig)
 
         // compile
         if (!compile(javaFile)) return None
@@ -56,8 +57,8 @@ class JPFSequenceExecutor(config: Config, putJarPath: String) {
         FileUtils.cleanDirectory(workingDir)
     }
 
-    private def generateJavaFile(prefix: Prefix, suffix1: Suffix, suffix2: Suffix) = {
-        val javaCode = TestPrettyPrinter.javaCodeFor(prefix, suffix1, suffix2, testName)
+    private def generateJavaFile(prefix: Prefix, suffix1: Suffix, suffix2: Suffix, outputConfig: TestPrettyPrinter.OutputConfig) = {
+        val javaCode = TestPrettyPrinter.javaCodeFor(prefix, suffix1, suffix2, testName, outputConfig)
         
         val javaFile = new File(workingDir, testName + ".java")
 
@@ -99,4 +100,17 @@ class JPFSequenceExecutor(config: Config, putJarPath: String) {
         errors
     }
 
+}
+
+object JPFSequenceExecutor extends App {
+    val config = new Config("cut", 1, 20, None, new File("/home/m/temp/"), true)
+    val jpf = new JPFSequenceExecutor(config, "/home/m/java/jAlbum/JAlbum.jar")
+    
+    println(jpf.workingDir.getAbsolutePath())
+    
+    jpf.compile(new File(jpf.workingDir+"/Test.java"))
+    val errors = jpf.runJPF("Test")
+    
+    println(errors)
+    
 }

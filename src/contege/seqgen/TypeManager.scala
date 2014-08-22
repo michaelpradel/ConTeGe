@@ -14,6 +14,7 @@ import contege.Config
 import javamodel.util.TypeResolver
 import contege.FieldGetterAtom
 import javamodel.staticc.UnknownType
+import scala.collection.mutable.Set
 
 /**
  * Central point to load classes under test (and helper classes to use the classes under test).
@@ -25,7 +26,8 @@ class TypeManager(cut: String, envClasses: Seq[String], val putClassLoader: Clas
 	
     val primitiveProvider = new PrimitiveProvider(random)
   
-	private val type2Atoms = Map[String, ArrayList[Atom]]()
+	private val type2Atoms = Map[String, ArrayList[Atom]]() // includes subtyping
+	private val type2AtomsPrecise = Map[String, ArrayList[Atom]]() // only precise matches
 	private val allClasses = new ArrayList[String]
 	allClasses.addAll(envClasses)
 	allClasses.add(cut)
@@ -34,13 +36,14 @@ class TypeManager(cut: String, envClasses: Seq[String], val putClassLoader: Clas
 			allSuperTypes(atom.returnType).foreach(typ => {
 				type2Atoms.getOrElseUpdate(typ, new ArrayList[Atom]).add(atom)	
 			})
-			
+			type2AtomsPrecise.getOrElse(atom.returnType.get, new ArrayList[Atom]).add(atom)
 		})
 			
 		methods(cls).foreach(atom => if(atom.returnType.isDefined) {
 			allSuperTypes(atom.returnType).foreach(typ => {
-				type2Atoms.getOrElseUpdate(typ, new ArrayList[Atom]).add(atom)
+			    type2Atoms.getOrElseUpdate(typ, new ArrayList[Atom]).add(atom)
 			})			
+			type2AtomsPrecise.getOrElseUpdate(atom.returnType.get, new ArrayList[Atom]).add(atom)
 		})			
 		
 		fieldGetters(cls).foreach(atom => {
@@ -48,13 +51,17 @@ class TypeManager(cut: String, envClasses: Seq[String], val putClassLoader: Clas
 			allSuperTypes(atom.returnType).foreach(typ => {
 				type2Atoms.getOrElseUpdate(typ, new ArrayList[Atom]).add(atom)
 			})		
+			type2AtomsPrecise.getOrElseUpdate(atom.returnType.get, new ArrayList[Atom]).add(atom)
 		})
 	})
 
-	private var cutMethods_ = methods(cut)
-	assert(!cutMethods_.isEmpty, cut)
+	println("TypeManager has indexed "+allClasses.size+" classes")
 	
-	def cutMethods = cutMethods_
+	private var cutMethods_ = methods(cut)
+	
+	def cutMethods = {
+	    cutMethods_
+	}
 	
 	def filterCUTMethods(oracleClass: String) = {
 	    val result = new ArrayList[MethodAtom]
@@ -70,8 +77,26 @@ class TypeManager(cut: String, envClasses: Seq[String], val putClassLoader: Clas
 		}
 	}
 	
+	def atomGivingTypeWithDowncast(typ: String): Option[Atom] = {
+	    val allFromTypes = allSuperTypes(Some(typ)).toSet
+	    val filteredFromTypes = if (allFromTypes.contains("java.lang.Object") && allFromTypes.size > 1) {
+	        allFromTypes.filter(_ != "java.lang.Object")
+	    } else allFromTypes
+	    
+	    val allPotentialAtoms = Set[Atom]()
+	    filteredFromTypes.foreach(fromType => allPotentialAtoms.addAll(allAtomsGivingPreciseType(fromType)))
+	    val potentialAtoms = allPotentialAtoms.filter(_.isConstructor == false)
+	    
+	    if (potentialAtoms.size == 0) None
+	    else Some(random.chooseOne(potentialAtoms.toSet))
+	}
+	
 	def allAtomsGivingType(typ: String): ArrayList[Atom] = {
 		type2Atoms.getOrElse(typ, new ArrayList[Atom])
+	}
+	
+	def allAtomsGivingPreciseType(typ: String): ArrayList[Atom] = {
+		type2AtomsPrecise.getOrElse(typ, new ArrayList[Atom])
 	}
 
 	/**
@@ -127,4 +152,5 @@ class TypeManager(cut: String, envClasses: Seq[String], val putClassLoader: Clas
 		}
 		result.sortWith((x,y) => x < y)
 	}
+	
 }

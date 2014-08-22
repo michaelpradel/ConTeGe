@@ -19,7 +19,7 @@ import contege.GlobalState
  * Possibly uses some variable already in the given sequence. 
  */
 class GetParamTask[CallSequence <: AbstractCallSequence[CallSequence]](seqBefore: CallSequence, typ: String,
-															global: GlobalState)
+         nullAllowed: Boolean, global: GlobalState)
 extends Task[CallSequence](global) {
 	
 	var param: Option[Variable] = None
@@ -37,9 +37,12 @@ extends Task[CallSequence](global) {
 	def computeSequenceCandidate = {
 		val newSequence = seqBefore.copy
 		
-		param = findVarOfType(typ, newSequence, true)
-		if (param.isDefined) Some(newSequence)
-		else None
+		param = findVarOfType(typ, newSequence, nullAllowed)
+		if (param.isDefined) {
+		    Some(newSequence)
+		} else {
+		    None
+		}
 	}
 	
 	private def findVarOfType(typ: String, sequence: CallSequence, nullAllowed: Boolean): Option[Variable] = {
@@ -52,19 +55,28 @@ extends Task[CallSequence](global) {
 			val vars = sequence.varsOfType(typ)
 		    val selectedVar = vars(global.random.nextInt(vars.size))
 			return Some(selectedVar)
+		} else if (!global.typeProvider.primitiveProvider.isNonRefType(typ) && nullAllowed && global.random.nextBool) {
+		    return Some(NullConstant) // occasionally, use null (reduce probability?) 
 		} else {
 			if (global.typeProvider.primitiveProvider.isPrimitiveOrWrapper(typ)) {
 				return Some(new Constant(global.typeProvider.primitiveProvider.next(typ)))
 			} else { // append calls to the sequence to create a new var of this type
-				val atomOption = global.typeProvider.atomGivingType(typ)
+				var atomOption = global.typeProvider.atomGivingType(typ)
+				var downcast = false
 				if (!atomOption.isDefined) {
-					if (nullAllowed) {
+					if (nullAllowed && global.random.nextBool) {
 						global.stats.nullParams.add(typ)
 						return Some(NullConstant)
 					} else {
-						global.stats.noParamFound.add(typ)
-						return None
-					}					
+					    // try to call a method where we downcast the return value
+						val atomWithDowncastOption = global.typeProvider.atomGivingTypeWithDowncast(typ)
+						if (atomWithDowncastOption.isDefined) {
+						    atomOption = atomWithDowncastOption
+						    downcast = true
+						} else {
+						    return None
+						}
+					}				
 				}
 				val atom = atomOption.get
 				
@@ -73,7 +85,7 @@ extends Task[CallSequence](global) {
 									// recursively try to find a variable we can use as receiver
 									findVarOfType(atom.declaringType, sequence, false) match {
 										case Some(r) => {
-										    // if the receiver is the OUT, we should only use CUT methods
+										    // if the receiver is the OUT, we should only use CUT methods (only important for subclass testing)
 										    if (seqBefore.getCutVariable != null && seqBefore.getCutVariable == r && !global.typeProvider.cutMethods.contains(atom)) {
 										        return None
 										    }
@@ -96,7 +108,8 @@ extends Task[CallSequence](global) {
 				assert(atom.returnType.isDefined)
 				val retVal = Some(new ObjectVariable)
 
-				sequence.appendCall(atom, receiver, args, retVal)		
+				var downcastType = if (downcast) Some(typ) else None
+				sequence.appendCall(atom, receiver, args, retVal, downcastType)		
 		
 				return retVal
 			}

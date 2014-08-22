@@ -13,6 +13,10 @@ import java.lang.reflect.InvocationTargetException
 import java.io.PrintStream
 import contege.seqexec.reflective.SequenceExecutor
 
+/*
+ * Assumed to be used only for thread-safety testing (not for subclass testing).
+ * Otherwise, must propagate createOutputVectors switch to JPF executor.
+ */
 class JPFFirstSequenceExecutor(globalState: GlobalState, putJarPath: String) {
 
     private val reflectiveExecutor = new SequenceExecutor(globalState.stats, globalState.config)
@@ -24,7 +28,7 @@ class JPFFirstSequenceExecutor(globalState: GlobalState, putJarPath: String) {
 							suffix1: Suffix,
 							suffix2: Suffix): Set[String] = {
 	    // try JPF first
-	    val errorsOption = jpfExecutor.executeConcurrently(prefix, suffix1, suffix2)
+	    val (errorsOption, _) = jpfExecutor.executeConcurrently(prefix, suffix1, suffix2, TestPrettyPrinter.NoOutputVectors)
 	    if (errorsOption.isDefined) {
 	        // JPF run was successful
 	        return errorsOption.get

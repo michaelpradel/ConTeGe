@@ -12,19 +12,22 @@ import contege.MethodAtom
 import contege.Stats
 import contege.Config
 import contege.GlobalState
+import contege.MethodAtom
 
 /**
- * Calls an arbitrary method on a given variable
+ * Calls a method on a given variable
  * (hoping that the call influences the state of the receiver object).
  */
 class StateChangerTask(prefix: Prefix,
                        global: GlobalState) extends Task[Prefix](global) {
 	
+    var targetMethod: Option[MethodAtom] = None
+    
     override def computeSequenceCandidate(): Option[Prefix] = { 
     	var candidate = prefix.copy
     	
-    	// choose a method to call
-    	val selectedMethod = global.random.chooseOne(global.typeProvider.cutMethods)
+    	// choose a method to call (or use the target method)
+    	val selectedMethod = if (targetMethod.isDefined) targetMethod.get else global.random.chooseOne(global.typeProvider.cutMethods)
 
     	val receiver = Some(prefix.getCutVariable)
     	
@@ -33,7 +36,7 @@ class StateChangerTask(prefix: Prefix,
 		val args = new ArrayList[Variable]()
 		
 		selectedMethod.paramTypes.foreach(typ => {
-			val paramTask = new GetParamTask(candidate, typ, global)			
+			val paramTask = new GetParamTask(candidate, typ, true, global)			
 			paramTask.run match {
 				case Some(extendedSequence) => {
 					candidate = extendedSequence
@@ -54,7 +57,7 @@ class StateChangerTask(prefix: Prefix,
     	
     	// append a call to the method
 		val extendedCandidate = candidate.copy
-		extendedCandidate.appendCall(selectedMethod, receiver, args, retVal)
+		extendedCandidate.appendCall(selectedMethod, receiver, args, retVal, None)
 		
 		Some(extendedCandidate)
     }
