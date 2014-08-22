@@ -18,27 +18,27 @@ import contege.GlobalState
  * calls to get arguments for the CUT call.
  */
 class CallCutMethodTask(suffix: Suffix,
-						cutMethods: Seq[MethodAtom],
-						global: GlobalState) extends Task[Suffix](global) {
+	cutMethods: Seq[MethodAtom],
+	global: GlobalState) extends Task[Suffix](global) {
 
 	override def run = {
 		global.stats.callCutTasksStarted.incr
 		val ret = super.run
-		if (!ret.isDefined) global.stats.callCutTasksFailed.incr 
-		ret		
+		if (!ret.isDefined) global.stats.callCutTasksFailed.incr
+		ret
 	}
-	
+
 	def computeSequenceCandidate: Option[Suffix] = {
 		var candidate = suffix.copy
 		val cutMethod = cutMethods(global.random.nextInt(cutMethods.size))
 		val receiver = candidate.prefix.getCutVariable
 		assert(suffix.varsOfType(global.config.cut).contains(receiver))
-	
+
 		// create a subtask for each parameter; if one fails, this task also fails
 		val args = new ArrayList[Variable]()
-		
+
 		cutMethod.paramTypes.foreach(typ => {
-			val paramTask = new GetParamTask[Suffix](candidate, typ, true, global)			
+			val paramTask = new GetParamTask[Suffix](candidate, typ, global)
 			paramTask.run match {
 				case Some(extendedSequence) => {
 					candidate = extendedSequence
@@ -46,20 +46,24 @@ class CallCutMethodTask(suffix: Suffix,
 					args.add(paramTask.param.get)
 				}
 				case None => {
-					global.stats.callCutFailedReasons.add("couldn't find param of type "+typ)
+					global.debug(" -- couldn't find param of type: " + typ, 1)
+					global.stats.callCutFailedReasons.add("couldn't find param of type " + typ)
 					return None
 				}
 			}
 		})
-		
+
 		val retVal = cutMethod.returnType match {
 			case Some(t) => Some(new ObjectVariable)
 			case None => None
-		} 
-		
+		}
+
+		//println("retVal: " + retVal)
 		val extendedCandidate = candidate.copy
-		extendedCandidate.appendCall(cutMethod, Some(receiver), args, retVal, None)
+		//println(" -- append to call to candidate")
+		extendedCandidate.appendCall(cutMethod, Some(receiver), args, retVal)
+		//println("extendedCandidate: " + extendedCandidate)
 		Some(extendedCandidate)
 	}
-	
+
 }

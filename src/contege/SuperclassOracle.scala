@@ -33,7 +33,7 @@ class SuperclassOracle(config: SubclassTesterConfig, seqExecutor: SequenceExecut
 			        case Some(_) => // ignore -- also ignores case where oracle class throws another exception -- ensures tt no false warnings
 			        case None => {
 			            // write to result listener(s)
-			            config.checkerListeners.foreach(_.appendResultMsg("@@@ Call sequence fails for subclass but succeeds for superclass @@@"))
+			            //config.checkerListeners.foreach(_.appendResultMsg("@@@ Call sequence fails for subclass but succeeds for superclass @@@"))
 				        printSequence(oracleSeq)
 			            reportExceptionFromExecutor(failure)    
 	
@@ -63,10 +63,12 @@ class SuperclassOracle(config: SubclassTesterConfig, seqExecutor: SequenceExecut
 			    if (!failureOpt.isDefined) {  // if fails for Super, not interesting for substitutability checking --> ignore
 			    	if (expectedOutput != outputVector) {
 			    	    if (config.stopOnOutputDiff) {
+			    	    	/*
 				    	    config.checkerListeners.foreach(_.appendResultMsg("@@@ Call sequence gives different output vectors for sub- and superclass @@@"))
 				    	    config.checkerListeners.foreach(_.appendResultMsg(seq.toString))
 				    	    config.checkerListeners.foreach(_.appendResultMsg(">> Super's output vector:\n"+outputVector+"\n"))
 				    	    config.checkerListeners.foreach(_.appendResultMsg(">> Sub's output vector:\n"+expectedOutput+"\n"))
+				    	    */
 				    	    
 				    	    // exit: we found what we are looking for
 				            finalizer.finalizeAndExit(true)    
@@ -94,8 +96,10 @@ class SuperclassOracle(config: SubclassTesterConfig, seqExecutor: SequenceExecut
     }
     
     private def printSequence(seq: AbstractCallSequence[_]) = {
+    	/*
         if (seq.isInstanceOf[Prefix]) config.checkerListeners.foreach(_.appendResultMsg(seq.toString))
         else config.checkerListeners.foreach(_.appendResultMsg("Prefix:\n"+seq.asInstanceOf[Suffix].prefix.toString+"Suffix:\n"+seq.toString))
+        */
     }
     
 	private def reportExceptionFromExecutor(t: Throwable) = {
@@ -105,10 +109,10 @@ class SuperclassOracle(config: SubclassTesterConfig, seqExecutor: SequenceExecut
 		    // write stack trace
 		    val baos = new ByteArrayOutputStream
 			realException.printStackTrace(new PrintStream(baos))
-			config.checkerListeners.foreach(_.appendResultMsg(baos.toString))
+			//config.checkerListeners.foreach(_.appendResultMsg(baos.toString))
 			
 			// write message
-			if (realException.getMessage != null) config.checkerListeners.foreach(_.appendResultMsg(realException.getMessage+"\n"))
+			//if (realException.getMessage != null) config.checkerListeners.foreach(_.appendResultMsg(realException.getMessage+"\n"))
 		}
 	}
     

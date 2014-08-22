@@ -38,8 +38,8 @@ class Random(val seed: Int) {
 		list.get(nextInt(list.size))
 	}
 	
-	def chooseOne[T](set: Set[T]) = {
-	    set.toList.get(nextInt(set.size))
+	def reset {
+		rand = new JRandom(seed)
 	}
 	
 }

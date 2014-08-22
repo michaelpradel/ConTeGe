@@ -34,7 +34,8 @@ class JPFFirstSequenceExecutor(globalState: GlobalState, putJarPath: String) {
 	        return errorsOption.get
 	    } else {
 	    	// fall back to normal concurrent execution if JPF run is inconclusive (timeout or JPF crash)
-	        val throwables = reflectiveExecutor.executeConcurrently(prefix, suffix1, suffix2)
+	        //val throwables = reflectiveExecutor.executeConcurrently(prefix, suffix1, suffix2)
+	    	val throwables = new ArrayList[Throwable]()
 	        
 	        val errors = throwables.map(t => {
                 val realException = if (t.isInstanceOf[InvocationTargetException]) t.asInstanceOf[InvocationTargetException].getCause

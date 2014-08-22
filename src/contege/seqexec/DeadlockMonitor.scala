@@ -16,15 +16,15 @@ class DeadlockMonitor(config: Config, global: GlobalState) extends Thread {
 	 */
 	override def run() {
 		while (true) {
-			Thread.sleep(1000);
+			Thread.sleep(60000);
 			val threads = threadMgr.findDeadlockedThreads
 			if (threads != null) {  // found a deadlock
-			    config.checkerListeners.foreach(_.appendResultMsg("\n =========Found a thread safety violation (deadlock)! ========" ))
+			    global.debug("\n =========Found a thread safety violation (deadlock)! ========", 1)
 				val threadInfos = threadMgr.getThreadInfo(threads, true, true)
-				threadInfos.foreach(info => config.checkerListeners.foreach(_.appendResultMsg(info.toString)))
-				config.checkerListeners.foreach(_.appendResultMsg("=====================================================================" ))
-				
-				global.finalizer.finalizeAndExit(true)
+				threadInfos.foreach(info => {
+					global.debug(info.toString, 1)
+				})
+				global.debug("=====================================================================", 1)
 			}
 		}
 	}

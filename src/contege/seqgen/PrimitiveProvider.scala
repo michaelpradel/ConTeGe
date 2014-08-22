@@ -7,21 +7,9 @@ import contege.Random
  */
 class PrimitiveProvider(random: Random) {
 
-    def isNonRefType(typ: String) = {
-        if (typ == "int") true
-		else if (typ == "byte") true
-		else if (typ == "short") true
-		else if (typ == "long") true
-		else if (typ == "char") true
-		else if (typ == "boolean") true
-		else if (typ == "float") true
-		else if (typ == "double") true		
-		else false
-    }
-    
 	def isPrimitiveOrWrapper(typ: String) = {
 		if (typ == "int" || typ == "java.lang.Integer") true
-		else if (typ == "java.lang.String") true  // we treat Strings as primitive types
+		else if (typ == "java.lang.String") true  // we treat Strings as primitive types!
 		else if (typ == "byte" || typ == "java.lang.Byte") true
 		else if (typ == "short" || typ == "java.lang.Short") true
 		else if (typ == "long" || typ == "java.lang.Long") true
@@ -34,7 +22,7 @@ class PrimitiveProvider(random: Random) {
 
 	def next(typ: String): Object = {
 		if (typ == "int" || typ == "java.lang.Integer") nextInt.asInstanceOf[Object]
-		else if (typ == "java.lang.String") nextString  // we treat Strings as primitive types
+		else if (typ == "java.lang.String") nextString  // we treat Strings as primitive types!
 		else if (typ == "byte" || typ == "java.lang.Byte") nextByte.asInstanceOf[Object]
 		else if (typ == "short" || typ == "java.lang.Short") nextShort.asInstanceOf[Object]
 		else if (typ == "long" || typ == "java.lang.Long") nextLong.asInstanceOf[Object]
@@ -60,6 +48,7 @@ class PrimitiveProvider(random: Random) {
 	
 	def nextString = {
 		val sb = new StringBuilder
+		sb.append(nextChar)
 		while (random.nextBool) sb.append(nextChar)
 		sb.toString
 	}

@@ -8,6 +8,8 @@ import contege.FieldGetterAtom
 import contege.Stats
 import contege.Config
 import contege.GlobalState
+import scala.collection.mutable.ListMap
+import contege.CustomClassLoader
 
 class Prefix(global: GlobalState) extends AbstractCallSequence[Prefix](global) {
 
@@ -40,7 +42,7 @@ class Prefix(global: GlobalState) extends AbstractCallSequence[Prefix](global) {
     	        else false
     	    }
     	    
-    		result.appendCall(call.atom, call.receiver, call.args, call.retVal, call.downcastType, producesCutVar)
+    		result.appendCall(call.atom, call.receiver, call.args, call.retVal, producesCutVar)
     	})
     	result.cutVariable = cutVariable
     	result
@@ -72,4 +74,30 @@ class Prefix(global: GlobalState) extends AbstractCallSequence[Prefix](global) {
 	    }
 	}
 	
+	def adaptToNewClassVersion(classLoader: CustomClassLoader): (Prefix, ListMap[Option[Variable], Option[Variable]], Boolean) = {
+		val newPrefix = new Prefix(global)
+		var var2var = ListMap[Option[Variable], Option[Variable]]()
+		var success = true
+		
+		calls.foreach(call => {
+			try {
+				if (call.atom.isConstructor) {
+					val (atom, receiver, args, retVal) = adaptConstructor(call, classLoader, var2var)
+					newPrefix.appendCall(atom, receiver, args, retVal)
+				} else if (call.atom.isMethod || call.atom.isField) {
+					val (atom, receiver, args, retVal) = adaptMethodOrFieldAccess(call, classLoader, var2var)
+					newPrefix.appendCall(atom, receiver, args, retVal)
+				} else {
+				  throw new Exception("could not adapt call: " + call.toString)
+				}
+			} catch {
+				case a: AssertionError  => {
+					success = false
+					println(" >>> WARNING: could not append call: " + call.toString)
+				}
+			}
+    	})  
+    	
+    	return (newPrefix, var2var, success)
+	}
 }

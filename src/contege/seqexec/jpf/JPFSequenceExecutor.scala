@@ -103,7 +103,8 @@ class JPFSequenceExecutor(config: Config, putJarPath: String) {
 }
 
 object JPFSequenceExecutor extends App {
-    val config = new Config("cut", 1, 20, None, new File("/home/m/temp/"), true)
+    //val config = new Config("cut", 1, 20, None, new File("/home/m/temp/"), true, "")
+    val config = new Config(new File("/home/m/temp/"))
     val jpf = new JPFSequenceExecutor(config, "/home/m/java/jAlbum/JAlbum.jar")
     
     println(jpf.workingDir.getAbsolutePath())

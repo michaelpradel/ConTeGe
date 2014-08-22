@@ -2,5 +2,3 @@
 bin
 *.swp
 *~
-.scala_dependencies
-.cache

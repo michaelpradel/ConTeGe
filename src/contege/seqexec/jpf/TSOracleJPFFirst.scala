@@ -52,6 +52,7 @@ extends TSOracle(finalizer: Finalizer, stats: Stats, config: Config) {
                     println("TSOracleJPFFirst: failedSeqInJPF="+failedSeqInJPF)
                     
                     if (!failedSeqInJPF) {
+                    	/*
 	                    config.checkerListeners.foreach(_.appendResultMsg("\n==== Found a thread safety violation! ===="))
 	                    config.checkerListeners.foreach(_.appendResultMsg("Sequential prefix:\n" + prefix + "\nConcurrent suffixes:\n"))
 	                    config.checkerListeners.foreach(_.appendResultMsg(suffix1.toString))
@@ -60,6 +61,7 @@ extends TSOracle(finalizer: Finalizer, stats: Stats, config: Config) {
 	                    concExecErrors.foreach(e => {
 	                        config.checkerListeners.foreach(_.appendResultMsg(e))
 	                    })
+	                    */
 	                    finalizer.finalizeAndExit(true)    
                     }
                 }

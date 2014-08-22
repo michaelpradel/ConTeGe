@@ -21,8 +21,7 @@ object SequencePrinter {
     
     def callToString(call: Call, id: Variable => String, outputConfig: OutputConfig) = {
 		val sb = new StringBuilder
-		var newVarType = javaType(if (call.downcastType.isDefined) call.downcastType.get else call.atom.returnType.get)
-		sb.append(if (call.retVal.isDefined) "final "+newVarType+" "+id(call.retVal.get)+" = "+(if (call.downcastType.isDefined) "("+call.downcastType.get+") " else "") else "")
+		sb.append(if (call.retVal.isDefined) "final "+javaType(call.atom.returnType.get)+" "+id(call.retVal.get)+" = " else "")
 		sb.append(if (call.atom.isConstructor) "new "+javaType(call.atom.declaringType)
 				  else if (call.atom.isStatic) javaType(call.atom.declaringType)+"."+call.atom.methodName
 				  else id(call.receiver.get)+"."+call.atom.methodName)

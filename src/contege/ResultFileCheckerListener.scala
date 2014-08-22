@@ -1,26 +1,35 @@
 package contege
 import java.io.PrintStream
+import java.io.File
 
-class ResultFileCheckerListener(fileName: String) extends CheckerListener {
+class ResultFileCheckerListener(filePath: String, fileName: String) extends CheckerListener {
 
-  private val ps = new PrintStream(fileName)
+	private val directory = new File(filePath)
+	
+	if (!directory.exists) {
+		directory.mkdirs
+	}
 
-  def appendResultMsg(s: String) = {
-    ps.println(s)
-  }
+	private var file = filePath + "/" + fileName
 
-  def notifyDoneAndBugFound(testCode: String) = {
-    ps.flush
-    ps.close
-  }
+	private val ps = new PrintStream(file)
 
-  def notifyDoneNoBug = {
-    ps.flush
-    ps.close
-  }
+	def appendResultMsg(s: String) = {
+		ps.println(s)
+	}
 
-  // ignore everything that is not result-related
-  def updateNbGeneratedTests(nb: Long) = {}
-  def appendStatusMsg(s: String) = {}
+	def notifyDoneAndBugFound(testCode: String) = {
+		ps.flush
+		ps.close
+	}
+
+	def notifyDoneNoBug = {
+		ps.flush
+		ps.close
+	}
+
+	// ignore everything that is not result-related
+	def updateNbGeneratedTests(nb: Long) = {}
+	def appendStatusMsg(s: String) = {}
 
 }

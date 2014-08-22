@@ -4,22 +4,27 @@ import contege._
 
 object TimeoutRunner {
 
-	val timeout = 10000 // milliseconds
-	
+	val timeout = 20000 // milliseconds
+
 	def runWithTimeout(execute: () => ExecutionResult, description: String): ExecutionResult = {
 		val execThread = new TimedExecutionThread(execute)
 		execThread.start
 		execThread.join(timeout)
 		if (!execThread.runFinished) {
 			execThread.stop
-			println("Timeout when running "+description)
+			println("Timeout when running " + description)
 			Console.out.flush
 			return Exception(TimeoutException)
 		}
-		assert(execThread.result != null)
+		if (execThread.result == null) {
+			println("Warning thread result was 'null'")
+			return Exception(ThreadResultNull)
+		}
 		return execThread.result
 	}
-	
+
 }
 
 object TimeoutException extends RuntimeException
+
+object ThreadResultNull extends RuntimeException

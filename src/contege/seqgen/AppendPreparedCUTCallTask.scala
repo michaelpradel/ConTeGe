@@ -32,7 +32,7 @@ class AppendPreparedCUTCallTask(suffix: Suffix,
 			case None => None
 		}
 		
-		candidate.appendCall(method, Some(receiver), args, retVal, None)
+		candidate.appendCall(method, Some(receiver), args, retVal)
 		Some(candidate)
 	}
 	

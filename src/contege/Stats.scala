@@ -2,9 +2,10 @@ package contege
 
 import scala.collection.mutable.Map
 
-class Stats {
+class Stats(config: Config) {
 
     val timer = new Timer
+    val performanceTimer = new PerformanceTimer(config)
   
 	val executedSequences = new IncrementableCounter
 	val failedSequenceExecutions = new IncrementableCounter
