@@ -100,7 +100,7 @@ class FileWriter(filePath: String, fileName: String) {
 		ps.println("max_state_changes_in_prefix:" + config.maxStateChangersInPrefix)
 		ps.println("choose_only_cut_methods:" + config.chooseCUTCall)
 		ps.println("suffix_runs:" + config.suffixRuns)
-		ps.println("nr_threads:" + config.nrThreads.deepMkString(","))
+		ps.println("nr_threads:" + config.nrThreads.mkString(","))
 		ps.print("focus_methods:")
 		focusMethods.map { case (method, priority) => method + "[" + priority + "];" }.foreach { method => ps.print(method) }
 		ps.println()

@@ -104,7 +104,7 @@ object OutputVector {
                     else if (typ == "java.lang.Float") result.add(java.lang.Float.valueOf(valAsString))
                     else if (typ == "java.lang.Double") result.add(java.lang.Double.valueOf(valAsString))
                     else if (typ == "java.lang.Boolean") result.add(java.lang.Boolean.valueOf(valAsString))
-                    else if (typ == "java.lang.Character") result.add(new java.lang.Character(valAsString.first))
+                    else if (typ == "java.lang.Character") result.add(new java.lang.Character(valAsString.charAt(0)))
                     else if (typ == "java.lang.String") result.add(valAsString)
                 } else { // everything else is a string 
                     result.add(l)

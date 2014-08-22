@@ -94,8 +94,8 @@ class ClassTester(config: Config, stats: Stats, classLoaderV0: CustomClassLoader
 		println("Tuning Parameters")
 		var suffixLengthFound = false
 
-		val nrThreadsMin = config.nrThreads.first
-		val nrThreadsMax = config.nrThreads.last
+		val nrThreadsMin = config.nrThreads(0)
+		val nrThreadsMax = config.nrThreads(config.nrThreads.length-1)
 		var tries = 0
 		var exceptions = 0
 		println("running time tests with " + nrThreadsMin + " (min) and " + nrThreadsMax + " (max) threads")

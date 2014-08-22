@@ -12,5 +12,11 @@
 	<classpathentry kind="lib" path="lib/tools.jar"/>
 	<classpathentry kind="lib" path="ownLibs/clinitRewriter.jar"/>
 	<classpathentry kind="lib" path="ownLibs/javaModel.jar"/>
+	<classpathentry kind="lib" path="lib/asm-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/asm-analysis-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/asm-commons-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/asm-tree-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/asm-util-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/asm-xml-4.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
