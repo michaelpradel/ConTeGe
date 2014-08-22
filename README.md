@@ -1,7 +1,7 @@
 ConTeGe
 =======
 
-ConTeGe (short for Concurrent Test Generator) is a framework for generating sequential and concurrent unit tests. We is a research platform to build tools for finding correctness and performance problems in sequential and concurrent Java classes. In particular, ConTeGe is the basis for the following approaches:
+ConTeGe (short for Concurrent Test Generator) is a framework for generating sequential and concurrent unit tests. It is a research platform to build tools for finding correctness and performance problems in sequential and concurrent Java classes. In particular, ConTeGe is the basis for the following approaches:
 
 ### An automatic and precise thread safety checker that found previously unknown bugs in the JDK
  
