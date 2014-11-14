@@ -2,7 +2,6 @@ package permissionTest;
 
 import java.lang.reflect.Method;
 
-import contege.ClassLoaderHelper2;
 
 public class PermissionsTest {
 
@@ -14,7 +13,7 @@ public class PermissionsTest {
 		API a = new API();
 		Method m = a.getClass().getDeclaredMethods()[0];
 		
-		ClassLoaderHelper2.invoke(m, a);
+//		ClassLoaderHelper2.invoke(m, a);
 		
 		
 	}

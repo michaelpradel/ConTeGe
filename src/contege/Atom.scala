@@ -55,8 +55,7 @@ class MethodAtom(receiverType: Class[_], val method: Method) extends Atom(receiv
 			try {
 				if (receiver == null && !isStatic) Exception(NullAsReceiverException)
 				else {
-//					val r = method.invoke(receiver, args:_*)
-				    val r = ReflectionHelper.methodInvoke(method, receiver, args)
+					val r = method.invoke(receiver, args:_*)
 					if (downcastCls.isDefined) {
 						var casted = downcastCls.get.cast(r)
 						Normal(casted.asInstanceOf[Object])
@@ -110,8 +109,7 @@ class ConstructorAtom(receiverType: Class[_], val constr: Constructor[_]) extend
 		assert(receiver == null)
 		val result = TimeoutRunner.runWithTimeout(() => {
 			try {
-//				val r = constr.newInstance(args:_*)
-			    val r = ReflectionHelper.constructorNewInstance(constr, args)
+				val r = constr.newInstance(args:_*)
 				Normal(r.asInstanceOf[Object])
 			} catch {
 				case t: InvocationTargetException => Exception(t)
@@ -156,8 +154,7 @@ class FieldGetterAtom(receiverType: Class[_], val field: Field) extends Atom(rec
 	override def execute(receiver: Object, args: Seq[Object], downcastCls: Option[Class[_]]): ExecutionResult = {
 		try {
 			if (receiver == null && !isStatic) return Exception(NullAsReceiverException)
-//			val r = field.get(receiver)
-			val r = ReflectionHelper.fieldGet(field, receiver)
+			val r = field.get(receiver)
 			return Normal(r)
 		} catch {
 			case t: InvocationTargetException => Exception(t)
