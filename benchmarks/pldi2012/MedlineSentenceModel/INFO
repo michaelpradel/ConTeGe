@@ -1,0 +1,12 @@
+== Program ==
+LingPipe 4.1.0
+
+== Class ==
+com.aliasi.sentences.MedlineSentenceModel
+
+== Stack trace that exposes the bug ==
+java.lang.IllegalStateException: 
+	at com.aliasi.util.CompactHashSet.add(CompactHashSet.java:219)
+	at com.aliasi.sentences.HeuristicSentenceModel.boundaryIndices(HeuristicSentenceModel.java:242)
+	at test.MedlineSentenceModelTest$1.run(MedlineSentenceModelTest.java:21)
+	at java.lang.Thread.run(Thread.java:662)

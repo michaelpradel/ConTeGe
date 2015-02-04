@@ -1,0 +1,27 @@
+== Program ==
+JDK 1.6.0._27
+
+== Class ==
+java.util.concurrent.ConcurrentHashMap
+
+== Note ==
+See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7107115
+
+== Stack trace that exposes the bug ==
+java.lang.StackOverflowError
+	at java.util.AbstractMap$SimpleEntry.<init>(AbstractMap.java:551)
+	at java.util.concurrent.ConcurrentHashMap$WriteThroughEntry.<init>(ConcurrentHashMap.java:1137)
+	at java.util.concurrent.ConcurrentHashMap$EntryIterator.next(ConcurrentHashMap.java:1163)
+	at java.util.concurrent.ConcurrentHashMap$EntryIterator.next(ConcurrentHashMap.java:1157)
+	at java.util.AbstractMap.hashCode(AbstractMap.java:461)
+	at java.util.AbstractMap$SimpleEntry.hashCode(AbstractMap.java:640)
+	at java.util.AbstractMap.hashCode(AbstractMap.java:461)
+	at java.util.AbstractMap$SimpleEntry.hashCode(AbstractMap.java:640)
+	at java.util.AbstractMap.hashCode(AbstractMap.java:461)
+	at java.util.AbstractMap$SimpleEntry.hashCode(AbstractMap.java:640)
+	at java.util.AbstractMap.hashCode(AbstractMap.java:461)
+	at java.util.AbstractMap$SimpleEntry.hashCode(AbstractMap.java:640)
+	at java.util.AbstractMap.hashCode(AbstractMap.java:461)
+	at java.util.AbstractMap$SimpleEntry.hashCode(AbstractMap.java:640)
+	at java.util.AbstractMap.hashCode(AbstractMap.java:461)
+  (...)

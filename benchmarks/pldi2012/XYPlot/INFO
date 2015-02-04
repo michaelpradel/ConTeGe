@@ -1,0 +1,20 @@
+== Program ==
+JFreeChart 1.0.9
+
+== Class ==
+org.jfree.chart.plot.XYPlot
+
+== Note ==
+See http://sourceforge.net/tracker/?func=detail&aid=1892744&group_id=15494&atid=115494
+
+== Stack trace that exposes the bug ==
+java.util.ConcurrentModificationException
+	at java.util.TreeMap$PrivateEntryIterator.nextEntry(TreeMap.java:1100)
+	at java.util.TreeMap$EntryIterator.next(TreeMap.java:1136)
+	at java.util.TreeMap$EntryIterator.next(TreeMap.java:1131)
+	at java.util.TreeMap.buildFromSorted(TreeMap.java:2372)
+	at java.util.TreeMap.buildFromSorted(TreeMap.java:2322)
+	at java.util.TreeMap.putAll(TreeMap.java:296)
+	at org.jfree.chart.plot.XYPlot.clone(XYPlot.java:4821)
+	at test.XYPlotTest$2.run(XYPlotTest.java:29)
+	at java.lang.Thread.run(Thread.java:662)

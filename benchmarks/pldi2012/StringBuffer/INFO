@@ -1,0 +1,16 @@
+== Program ==
+JDK 1.6.0._27
+
+== Class ==
+java.lang.StringBuffer
+
+== Note ==
+See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7100996
+
+== Stack trace that exposes the bug ==
+java.lang.IndexOutOfBoundsException: start 0, end 3, s.length() 2
+	at java.lang.AbstractStringBuilder.insert(AbstractStringBuilder.java:1104)
+	at java.lang.StringBuffer.insert(StringBuffer.java:478)
+	at java.lang.StringBuffer.insert(StringBuffer.java:468)
+	at test.StringBufferTest$1.run(StringBufferTest.java:16)
+	at java.lang.Thread.run(Thread.java:662)

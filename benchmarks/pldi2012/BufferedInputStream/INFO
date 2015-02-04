@@ -1,0 +1,21 @@
+== Program ==
+JDK 1.1
+
+== Class ==
+java.io.BufferedInputStream
+
+== Note ==
+The source code of the classes from JDK 1.1 that are relevant for the
+bug are in java11_src.tar.gz. We rename the package to avoid conflicts
+with the real Java runtime.
+We couldn't access the original source code for JDK 1.1 and
+therefore re-introduced the bug into the source code of JDK
+1.2, based on the description of the bug in the PhD thesis
+of Aaron Greenhouse (CMU, page 39).
+
+== Stack trace that exposes the bug ==
+java.lang.NullPointerException
+	at java11.io.BufferedInputStream.fill(BufferedInputStream.java:183)
+	at java11.io.BufferedInputStream.read(BufferedInputStream.java:201)
+	at test.BufferedInputStreamTest$2.run(BufferedInputStreamTest.java:29)
+	at java.lang.Thread.run(Thread.java:662)

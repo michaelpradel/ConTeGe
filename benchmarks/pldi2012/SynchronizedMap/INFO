@@ -1,0 +1,40 @@
+== Program ==
+JDK 1.4.2
+
+== Class ==
+java16.util.Collections.SynchronizedMap
+
+== Note ==
+The bug was first reported for JDK 1.4 but still exists in JDK 1.6.
+The source code of the relevant JDK classes is in java16_src.tar.gz.
+We copied these classes to java16.util to avoid conflicts with the
+real Java runtime.
+
+See "Static Deadlock Detection for Java Libraries" by Williams et al. (ECOOP'05)
+
+
+== Stack trace that exposes the bug ==
+ ============================= Deadlock =============================
+"Thread-64934" Id=64942 BLOCKED on java16.util.Collections$SynchronizedMap@1a82c34 owned by "Thread-64933" Id=64941
+	at java16.util.Collections$SynchronizedMap.hashCode(Collections.java:2049)
+	-  blocked on java16.util.Collections$SynchronizedMap@1a82c34
+	at java.util.Hashtable.hashCode(Hashtable.java:794)
+	-  locked java.util.Hashtable@15d545
+	at java16.util.Collections$SynchronizedMap.hashCode(Collections.java:2049)
+	-  locked java16.util.Collections$SynchronizedMap@164d023
+	at test.SynchronizedMapTest$2.run(SynchronizedMapTest.java:32)
+	at java.lang.Thread.run(Thread.java:662)
+
+
+"Thread-64933" Id=64941 BLOCKED on java16.util.Collections$SynchronizedMap@164d023 owned by "Thread-64934" Id=64942
+	at java16.util.Collections$SynchronizedMap.hashCode(Collections.java:2049)
+	-  blocked on java16.util.Collections$SynchronizedMap@164d023
+	at java.util.Hashtable.hashCode(Hashtable.java:794)
+	-  locked java.util.Hashtable@1ee0cd2
+	at java16.util.Collections$SynchronizedMap.hashCode(Collections.java:2049)
+	-  locked java16.util.Collections$SynchronizedMap@1a82c34
+	at test.SynchronizedMapTest$1.run(SynchronizedMapTest.java:23)
+	at java.lang.Thread.run(Thread.java:662)
+
+
+=====================================================================

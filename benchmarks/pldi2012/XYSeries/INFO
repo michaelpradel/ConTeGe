@@ -1,0 +1,17 @@
+== Program ==
+JFreeChart 0.9.8
+
+== Class ==
+org.jfree.data.XYSeries
+
+== Note ==
+See http://sourceforge.net/tracker/?func=detail&aid=757027&group_id=15494&atid=115494
+
+== Stack trace that exposes the bug ==
+java.util.ConcurrentModificationException
+	at java.util.AbstractList$Itr.checkForComodification(AbstractList.java:372)
+	at java.util.AbstractList$Itr.next(AbstractList.java:343)
+	at org.jfree.data.Series.notifyListeners(Unknown Source)
+	at org.jfree.data.Series.fireSeriesChanged(Unknown Source)
+	at test.XYSeriesTest$2.run(XYSeriesTest.java:35)
+	at java.lang.Thread.run(Thread.java:662)

@@ -30,15 +30,15 @@ class ClassTester(config: Config, stats: Stats, putClassLoader: ClassLoader, put
     random: Random, finalizer: Finalizer) {
 
     // PLDI 2012
-    //	private val cutCallsPerSeq = 2
-    //	private val maxSuffixLength = 10
-    //	private val concRunRepetitions = 100
-    //	private val maxStateChangersInPrefix = 5
-
     private val cutCallsPerSeq = 2
     private val maxSuffixLength = 10
-    private val concRunRepetitions = 1000
+    private val concRunRepetitions = 100
     private val maxStateChangersInPrefix = 5
+
+//    private val cutCallsPerSeq = 2
+//    private val maxSuffixLength = 10
+//    private val concRunRepetitions = 1000
+//    private val maxStateChangersInPrefix = 5
 
     private val prefixes = new ArrayList[Prefix] // kept separately to ensure deterministic random selection of one
     private val prefix2SuffixGen = Map[Prefix, SuffixGen]()
@@ -105,7 +105,7 @@ class ClassTester(config: Config, stats: Stats, putClassLoader: ClassLoader, put
             }
         }
 
-        println("ClassTester: Reached end of run() - i.e. could not find bug.")
+        println("ClassTester: Could not find bug.")	
     }
 
     private def getPrefix: Prefix = {
@@ -169,6 +169,8 @@ object ClassTester extends Finalizer {
         assert(maxSuffixGenTries >= 2)
         val callClinit = args(5).toBoolean
         val selectedCUTMethods: Option[ArrayList[String]] = if (args.size == 7) Some(readMethods(args(6))) else None
+        if (selectedCUTMethods.isDefined) println("Focusing on "+selectedCUTMethods.get.size+" CUT methods")
+        else println("No specific CUT methods selected")
         config = new Config(cut, seed, maxSuffixGenTries, selectedCUTMethods, new File("/tmp/"), callClinit)
         val random = new Random(seed)
 

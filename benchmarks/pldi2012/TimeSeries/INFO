@@ -1,0 +1,18 @@
+== Program ==
+JFreeChart 0.9.8
+
+== Class ==
+org.jfree.data.time.TimeSeries
+
+== Note ==
+
+See http://sourceforge.net/tracker/?func=detail&aid=948308&group_id=15494&atid=115494
+
+== Stack trace that exposes the bug ==
+java.lang.NullPointerException
+	at java.util.Collections.indexedBinarySearch(Collections.java:215)
+	at java.util.Collections.binarySearch(Collections.java:201)
+	at org.jfree.data.time.TimeSeries.add(Unknown Source)
+	at org.jfree.data.time.TimeSeries.add(Unknown Source)
+	at test.TimeSeriesTest$2.run(TimeSeriesTest.java:40)
+	at java.lang.Thread.run(Thread.java:662)

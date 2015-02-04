@@ -1,0 +1,21 @@
+== Program ==
+JDK 1.4.1_6
+
+== Class ==
+java.util.logging.Logger
+
+== Note ==
+The source code of the relevant classes from JDK 1.4.1_6 are
+in java141_src_tar.gz. We copied them to avoid conflicts with
+the real Java runtime.
+
+See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4779253
+
+== Stack trace that exposes the bug ==
+java.lang.NullPointerException
+	at java141.util.logging.Logger.log(Logger.java:421)
+	at java141.util.logging.Logger.doLog(Logger.java:458)
+	at java141.util.logging.Logger.log(Logger.java:481)
+	at java141.util.logging.Logger.info(Logger.java:996)
+	at test.LoggerTest$2.run(LoggerTest.java:36)
+	at java.lang.Thread.run(Thread.java:662)

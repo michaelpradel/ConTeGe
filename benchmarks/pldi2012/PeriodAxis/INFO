@@ -1,0 +1,15 @@
+== Program ==
+JFreeChart 1.0.1
+
+== Class ==
+org.jfree.chart.axis.PeriodAxis
+
+== Note ==
+See http://sourceforge.net/tracker/?func=detail&aid=1452432&group_id=15494&atid=115494
+
+== Stack trace that exposes the bug ==
+java.lang.IllegalArgumentException: Range(double, double): require lower (1.3315068E12) <= upper (8.2799999E7).
+	at org.jfree.data.Range.<init>(Range.java:89)
+	at org.jfree.chart.axis.PeriodAxis.getRange(PeriodAxis.java:492)
+	at test.PeriodAxisTest$1.run(PeriodAxisTest.java:19)
+	at java.lang.Thread.run(Thread.java:662)

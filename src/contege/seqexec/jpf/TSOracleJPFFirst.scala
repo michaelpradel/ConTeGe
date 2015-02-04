@@ -37,7 +37,7 @@ extends TSOracle(finalizer: Finalizer, stats: Stats, config: Config) {
                     interleaving = interleavings.nextInterleaving
                 }
                 if (!failedSequentially) {
-                    println("TSOracleJPFFirst: Seems we found a bug. Will try JPF linearizations to be sure.")
+                    println("\nTSOracleJPFFirst: Seems we found a bug. Will try JPF linearizations to be sure.")
                     
                     // to avoid false warnings due to JPF-specific errors, test all linearizations in JPF
                     var failedSeqInJPF = false

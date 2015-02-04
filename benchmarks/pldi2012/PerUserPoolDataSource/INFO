@@ -1,0 +1,14 @@
+== Program ==
+Commons DBCP 1.4 for JDBC 4
+
+== Class ==
+org.apache.commons.dbcp.datasources.PerUserPoolDataSource
+
+== Stack trace that exposes the bug ==
+java.util.ConcurrentModificationException
+	at java.util.HashMap$HashIterator.nextEntry(HashMap.java:793)
+	at java.util.HashMap$KeyIterator.next(HashMap.java:828)
+	at org.apache.commons.dbcp.datasources.InstanceKeyObjectFactory.registerNewInstance(InstanceKeyObjectFactory.java:51)
+	at org.apache.commons.dbcp.datasources.InstanceKeyDataSource.setDataSourceName(InstanceKeyDataSource.java:246)
+	at test.PerUserPoolDataSourceTest$1.run(PerUserPoolDataSourceTest.java:24)
+	at java.lang.Thread.run(Thread.java:662)

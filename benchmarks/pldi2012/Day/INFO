@@ -1,0 +1,22 @@
+== Program ==
+JFreeChart 1.0.13
+
+== Class ==
+org.jfree.data.time.Day
+
+== Note ==
+See http://sourceforge.net/tracker/?func=detail&aid=3096264&group_id=15494&atid=115494
+
+== Stack trace that exposes the bug ==
+java.lang.NumberFormatException: For input string: ""
+	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:48)
+	at java.lang.Long.parseLong(Long.java:431)
+	at java.lang.Long.parseLong(Long.java:468)
+	at java.text.DigitList.getLong(DigitList.java:177)
+	at java.text.DecimalFormat.parse(DecimalFormat.java:1297)
+	at java.text.SimpleDateFormat.subParse(SimpleDateFormat.java:1590)
+	at java.text.SimpleDateFormat.parse(SimpleDateFormat.java:1311)
+	at java.text.DateFormat.parse(DateFormat.java:335)
+	at org.jfree.data.time.Day.parseDay(Day.java:469)
+	at test.DayTest$2.run(DayTest.java:34)
+	at java.lang.Thread.run(Thread.java:662)

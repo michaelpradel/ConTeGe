@@ -1,0 +1,22 @@
+== Program ==
+XStream 1.4.1
+
+== Class ==
+com.thoughtworks.xstream.XStream
+
+== Note ==
+You need JDK 1.6.0_07 to reproduce this bug.
+
+See http://jira.codehaus.org/browse/XSTR-681
+
+== Stack trace that exposes the bug ==
+java.lang.NullPointerException
+	at com.sun.xml.internal.stream.writers.XMLStreamWriterImpl.writeStartDocument(XMLStreamWriterImpl.java:1109)
+	at com.thoughtworks.xstream.io.xml.StaxWriter.<init>(StaxWriter.java:74)
+	at com.thoughtworks.xstream.io.xml.StaxDriver.createStaxWriter(StaxDriver.java:141)
+	at com.thoughtworks.xstream.io.xml.StaxDriver.createStaxWriter(StaxDriver.java:145)
+	at com.thoughtworks.xstream.io.xml.StaxDriver.createWriter(StaxDriver.java:120)
+	at com.thoughtworks.xstream.XStream.toXML(XStream.java:837)
+	at com.thoughtworks.xstream.XStream.toXML(XStream.java:826)
+	at test.XStreamTest$2.run(XStreamTest.java:30)
+	at java.lang.Thread.run(Thread.java:619)

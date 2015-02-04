@@ -1,0 +1,12 @@
+== Program ==
+JFreeChart 0.9.12
+
+== Class ==
+org.jfree.chart.axis.NumberAxis
+
+== Stack trace that exposes the bug ==
+java.lang.IllegalArgumentException: Range(double, double): require lower<=upper.
+	at org.jfree.data.Range.<init>(Unknown Source)
+	at org.jfree.chart.axis.ValueAxis.centerRange(Unknown Source)
+	at test.NumberAxisTest$2.run(NumberAxisTest.java:33)
+	at java.lang.Thread.run(Thread.java:662)
