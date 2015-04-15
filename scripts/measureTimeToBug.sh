@@ -3,7 +3,7 @@
 pwd=`pwd`
 bmBaseDir="${pwd}/benchmarks/pldi2012"
 
-for benchmarkDir in `find /home/m/research/projects/ConTeGe/benchmarks/pldi2012 -mindepth 1 -maxdepth 1 -type d`
+for benchmarkDir in `find ${bmBaseDir} -mindepth 1 -maxdepth 1 -type d`
 do
   cut=`cat ${benchmarkDir}/cut.txt`
   rm -rf results/time_to_bug_${cut}.result
