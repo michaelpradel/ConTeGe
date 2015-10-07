@@ -49,7 +49,7 @@ class TSOracleNormalExec(finalizer: Finalizer, concRunRepetitions: Int,
 
                         val baos = new ByteArrayOutputStream
                         realException.printStackTrace(new PrintStream(baos))
-                        config.checkerListeners.foreach(_.appendResultMsg(baos.toString))
+                        config.checkerListeners.foreach(_.appendResultMsg("Exception Found : " + baos.toString))
                         config.checkerListeners.foreach(_.appendResultMsg(realException.getMessage))
                     })
                     finalizer.finalizeAndExit(true)

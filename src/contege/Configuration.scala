@@ -22,7 +22,7 @@ class Config(val cut: String, // class under test
 	
 	val shareOnlyCUTObject = false
 	
-	val useJPFFirst = true
+	val useJPFFirst = false
 
 	private var checkerListenersVar: List[CheckerListener] = Nil
 	def addCheckerListener(l: CheckerListener) = {
@@ -42,6 +42,14 @@ class SubclassTesterConfig(cut: String,  // the subclass
 		                workingDir: File,
 		                val compareOutputVectors: Boolean,
 		                val stopOnOutputDiff: Boolean) extends Config(cut, seed, maxSuffixGenTries, selectedCUTMethods, workingDir, true) {
+}
+
+class SeqTestGenConfig(cut: String, 
+		                seed: Int,
+		                maxSuffixGenTries: Int,
+		                val maxTests: Int,
+		                selectedCUTMethods: Option[ArrayList[String]],
+		                workingDir: File) extends Config(cut, seed, maxSuffixGenTries, selectedCUTMethods, workingDir, true) {
 }
 
 class PathTesterConfig (cut: String, val targetCutMethod: String, val targetMethodParameters: Set[List[Option[TypedParameter]]], seed: Int, val maxTests: Int, workingDir: File) extends Config(cut, seed, 0, None, workingDir, false) {

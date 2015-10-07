@@ -23,7 +23,7 @@ class SuffixGen(prefix: Prefix, val maxSuffixLength: Int,
 		global.typeProvider.cutMethods.filter(m => selected.contains(m.signature))
 	} else global.typeProvider.cutMethods
 
-	println("CUT methods:\n"+cutMethods.mkString("\n"))
+	//println("CUT methods:\n"+cutMethods.mkString("\n"))
 	
 	def nextSuffix(cutCalls: Int): Option[Suffix] = {
 		var suffix = new Suffix(prefix, global)
@@ -40,7 +40,7 @@ class SuffixGen(prefix: Prefix, val maxSuffixLength: Int,
 				return None
 			}
 		}
-		println("New prefix-suffix pair:\n"+prefix+"vvvvvvvvv\n"+suffix)
+		//println("New prefix-suffix pair:\n"+prefix+"vvvvvvvvv\n"+suffix)
 		return Some(suffix)
 	}
 		

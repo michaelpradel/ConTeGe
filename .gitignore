@@ -5,3 +5,6 @@ bin
 .scala_dependencies
 .cache
 results/*
+SeqTeGeTest.*
+jarExportForNainom.jardesc
+testSeqTeGe.sh

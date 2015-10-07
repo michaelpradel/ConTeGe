@@ -31,7 +31,8 @@ class CallTargetMethodTask(prefix: Prefix,
     	// create parameters to call the method (if needed)
     	// use user-provided parameter values
 		val args = new ArrayList[Variable]()
-	    val parameterValues = global.config.asInstanceOf[PathTesterConfig].targetMethodParameters
+	    val parameterValues = if (global.config.isInstanceOf[PathTesterConfig]) global.config.asInstanceOf[PathTesterConfig].targetMethodParameters
+	                          else Set[List[Option[TypedParameter]]]() 
 		
 	    if (parameterValues.size == 0) {
 	        for (argIdx <- 0 to targetMethod.paramTypes.length - 1) {
