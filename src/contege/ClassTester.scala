@@ -25,6 +25,7 @@ import java.io.File
 import contege.seqexec.reflective.TSOracleNormalExec
 import contege.seqexec.reflective.SequenceManager
 import contege.seqexec.reflective.SequenceExecutor
+import scala.util.control.Exception.allCatch
 
 class ClassTester(config: Config, stats: Stats, putClassLoader: ClassLoader, putJarPath: String, envTypes: ArrayList[String],
     random: Random, finalizer: Finalizer) {
@@ -161,14 +162,27 @@ object ClassTester extends Finalizer {
 
     def main(args: Array[String]): Unit = {
         println("Starting ClassTester at " + new Date())
-        assert(args.size == 6 || args.size == 7)
+        
+        assert(args.size == 6 || args.size == 7 || args.size ==8)
         val cut = args(0)
+        
+
+        def isLong(argsStr: String): Boolean = (allCatch opt argsStr.toLong).isDefined
+
+        if(args.size==8){
+          args(7) match
+          { 
+            case time if(isLong(time)) => scheduleTimer(time.toLong)
+            case _ => //do nothing as supplied string is not parseable to Integer
+           }
+          }
+        
 
         val seed = args(2).toInt
         val maxSuffixGenTries = args(3).toInt
         assert(maxSuffixGenTries >= 2)
         val callClinit = args(5).toBoolean
-        val selectedCUTMethods: Option[ArrayList[String]] = if (args.size == 7) Some(readMethods(args(6))) else None
+        val selectedCUTMethods: Option[ArrayList[String]] = if (args.size == 7 && args(6)!="-1") Some(readMethods(args(6))) else None
         if (selectedCUTMethods.isDefined) println("Focusing on "+selectedCUTMethods.get.size+" CUT methods")
         else println("No specific CUT methods selected")
         config = new Config(cut, seed, maxSuffixGenTries, selectedCUTMethods, new File("/tmp/"), callClinit)
@@ -188,10 +202,22 @@ object ClassTester extends Finalizer {
         stats.timer.start("all")
 
         tester.run
-
+       
         finalizeAndExit(false)
     }
 
+    //function to schedule timer to exit the program after given time in milliseconds.
+    def scheduleTimer(time:Long){
+      println("Timer scheduled for "+time+" milliseconds")
+      val timer = new java.util.Timer()
+        timer.schedule(new java.util.TimerTask(){
+          def run() {
+           println("Time exhausted, terminating the program.")
+           finalizeAndExit(false)
+           }    
+        }, time)//1hr = 3600000
+    }
+    
     def finalizeAndExit(bugFound: Boolean) = {
         stats.timer.stop("all")
         stats.print
