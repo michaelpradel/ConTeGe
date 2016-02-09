@@ -1,9 +1,6 @@
 package contege
 
-import java.io.BufferedReader
-import java.io.ByteArrayOutputStream
-import java.io.FileReader
-import java.io.PrintStream
+import java.io._
 import java.lang.reflect.InvocationTargetException
 import java.util.ArrayList
 import java.util.Date
@@ -21,7 +18,6 @@ import javamodel.util.TypeResolver
 import contege.seqexec.TestPrettyPrinter
 import contege.seqexec.jpf.JPFFirstSequenceExecutor
 import contege.seqexec.jpf.TSOracleJPFFirst
-import java.io.File
 import contege.seqexec.reflective.TSOracleNormalExec
 import contege.seqexec.reflective.SequenceManager
 import contege.seqexec.reflective.SequenceExecutor
@@ -57,6 +53,29 @@ class ClassTester(config: Config, stats: Stats, putClassLoader: ClassLoader, put
     } else {
         new TSOracleNormalExec(finalizer, concRunRepetitions, stats, seqMgr.seqExecutor, config)
     }
+
+
+    def testCaseOnMethodStats = new scala.collection.mutable.HashMap[String,Int]()
+    def storeStats(prefix: Prefix, suffixes: java.util.ArrayList[Suffix]) = {
+        def storeOrUpdateTestCount(methodName:String) = {
+            if(testCaseOnMethodStats.contains(methodName)){
+                testCaseOnMethodStats.put(methodName , testCaseOnMethodStats.get(methodName).get +1)
+            }else{
+                testCaseOnMethodStats.put(methodName , 1)
+            }
+        }
+
+        val methodNameSet = new scala.collection.mutable.HashSet[String]()
+        methodNameSet+=prefix.getCutVariable.toString
+        for(t <- suffixes){
+            methodNameSet+=t.getCutVariable.toString
+        }
+
+        methodNameSet.foreach(x=> storeOrUpdateTestCount(x))
+    }
+
+
+
 
     // hack to always go through the PUT class loader -- ideally TypeResolver would be a class instead of a singleton 
     TypeResolver.bcReader.classLoader = putClassLoader
@@ -159,6 +178,7 @@ object ClassTester extends Finalizer {
     val startTime = System.currentTimeMillis
     var stats: Stats = _
     var config: Config = _
+    var tester:ClassTester = null
 
     def main(args: Array[String]): Unit = {
         println("Starting ClassTester at " + new Date())
@@ -197,7 +217,7 @@ object ClassTester extends Finalizer {
 
         stats = new Stats
 
-        val tester = new ClassTester(config, stats, getClass.getClassLoader, ".", envTypes, random, this)
+        tester = new ClassTester(config, stats, getClass.getClassLoader, ".", envTypes, random, this)
         println("Testing " + cut + " with seed " + seed)
         stats.timer.start("all")
 
@@ -217,7 +237,12 @@ object ClassTester extends Finalizer {
            }    
         }, time)//1hr = 3600000
     }
-    
+
+    override
+    def getClassTester()= {
+        Some(tester)
+    }
+
     def finalizeAndExit(bugFound: Boolean) = {
         stats.timer.stop("all")
         stats.print
@@ -230,6 +255,17 @@ object ClassTester extends Finalizer {
             val testCode = currentTest.get
             config.checkerListeners.foreach(_.notifyDoneAndBugFound(testCode))
         } else config.checkerListeners.foreach(_.notifyDoneNoBug)
+
+        def writeMethodTestCaseStatsToFile() = {
+            if(getClassTester().isDefined) {
+                val fOut = new FileOutputStream(new File("./result/methodStat.out"))
+                fOut.write(getClassTester().get.testCaseOnMethodStats.map(pair => pair._1 + " : " + pair._2).mkString("\n").getBytes)
+                fOut.flush()
+                fOut.close()
+            }
+        }
+
+        writeMethodTestCaseStatsToFile()
 
         System.exit(0)
     }
