@@ -14,8 +14,13 @@ object Util {
 		val r = new BufferedReader(new FileReader(classesFileName))
 		var className = r.readLine
 		while (className != null) {
-			val cls = Class.forName(className, true, putClassLoader)
-			if (Modifier.isPublic(cls.getModifiers)) envTypes.add(className)
+			try {
+				val cls = Class.forName(className, true, putClassLoader)
+				if (Modifier.isPublic(cls.getModifiers)) envTypes.add(className)
+			}catch {
+				case ex:Exception => println("NON FATAL : Exception Occurred during class Instantiation.\n Exception:- "
+					+ex.getCause+"\n Class Name:- "+className)
+			}
 			className = r.readLine
 		}		
 		r.close

@@ -39,11 +39,20 @@ object GenericsReflector {
     }
     
     def getReturnType(m: Method, receiverCls: Class[_]): String = {
+      try{
         val typeVar2Class = resolveTypeVars(receiverCls)
         val genRetType = m.getGenericReturnType
         val cls = if (genRetType.isInstanceOf[TypeVariable[_]] && typeVar2Class.contains(genRetType)) typeVar2Class(genRetType.asInstanceOf[TypeVariable[_]])
-                  else m.getReturnType
+        else m.getReturnType
         cls.getName
+      }
+      catch{
+        case ex:Exception => {
+          println("NON FATAL : Exception ordered while resolving getReturnType \n Trying with java.lang.Object to " +
+            "continue Flow \n Method is "+m.getName+" \n Exception is "ex)
+          "java.lang.Object"
+        }
+      }
     }
     
     def getType(f: Field, receiverCls: Class[_]): String = {
