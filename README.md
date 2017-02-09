@@ -1,31 +1,35 @@
-ConTeGe
-=======
+# Efficient Detection of Thread Safety Violations via Coverage-Guided Generation of Concurrent Tests
+by Ankit Choudhary, Shan Lu and Michael Pradel
+ICSE 2017
+==================================================================================================
 
-ConTeGe (short for Concurrent Test Generator) is a framework for generating sequential and concurrent unit tests. It is a research platform to build tools for finding correctness and performance problems in sequential and concurrent Java classes. In particular, ConTeGe is the basis for the following approaches:
+# CovCon:
+	* The main tool for finding bugs in a given CUT.
+	* Run covcon/scripts/testTool.sh for CovCon to start up. 
+	* Add benchmarks to test in covcon/benchmarks/instrumented directory.
+	* Report file would be generated in concon/report.
+	* Result log files would be generated in covcon/res.
+	* Current time-out time is 3600 seconds. Update covcon/scripts/testTool.sh to modify the time-out time.
+	* Update covcon/scripts/testRun.sh to add the benchmark in the script.
+	* Some example benchmarks from our evaluation has been added to the covcon/benchmarks/instrumented and covcon/scripts/testRun.sh
+	* Source code for CovCon is in covcon/src. 
+	* The covcon.jar should be updated in covcon/ownLibs in case cource code is modified for changes to take effect.
+	
 
-### An automatic and precise thread safety checker that found previously unknown bugs in the JDK
- 
-See [thread-safe.org](http://thread-safe.org) for details.
+# Instrumentor: 
+	* Instrumentor instruments CUT and it's concrete super classes. 
+	* Add plugin Instrumentor/plugins/Instrumentor_1.0.0.201506170128.jar to Eclipse. 
+	* Right click on the CUT that needs to be instrumented.
+	* Click on the button "Instrument" from right click menu.
+	* The current project would have instrumented CUT while a new project <project_name>_old would be created with the uninstrumented CUT.
+	* Source code for Instrumentor is in Instrumentor/Instrumentor/src.
 
-[*Fully Automatic and Precise Detection of Thread Safety Violations*](http://mp.binaervarianz.de/pldi2012.pdf)  
-by Michael Pradel and Thomas R. Gross  
-at Conference on Programming Language Design and Implementation (PLDI), 2012
-
-### An approach for automatic substitutability testing that finds various bugs in widely used Java classes
-
-See [this page](http://mp.binaervarianz.de/icse2013/) for details.
-
-[*Automatic Testing of Sequential and Concurrent Substitutability*](http://mp.binaervarianz.de/icse2013.pdf)  
-by Michael Pradel and Thomas R. Gross  
-at International Conference on Software Engineering (ICSE), 2013
-
-### *SpeedGun*, a performance regression testing tool for thread-safe classes
-
-See the [SpeedGun branch](https://github.com/michaelpradel/ConTeGe/tree/SpeedGun) for details.
-
-[*Performance Regression Testing of Concurrent Classes*](http://mp.binaervarianz.de/issta2014.pdf)  
-by Michael Pradel, Markus Huggler, and Thomas R. Gross  
-at International Symposium on Software Testing and Analysis (ISSTA), 2014
-
-
-
+# CFPDetection:
+	* CFPDetection detects covered method pairs and prioritizes the set of method pairs.
+	* Source code for CFPDetction is in CFPDetection/src.
+	* The cfp_detection.jar should be updated in covcon/ownLibs in case source code is modified for changes to take effect. 
+	
+For further quesries contact: 
+	Ankit Choudhary - c.ankit@outlook.com
+	Shan Lu - shanlu@uchicago.edu 
+	Michael Pradel - michael@binaervarianz.de

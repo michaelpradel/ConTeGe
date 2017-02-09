@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="Instrumentor.objectContribution1"
+            objectClass="org.eclipse.jdt.core.ICompilationUnit">
+ <!--        <menu
+               id="Instr.menu1"
+               label="Instr"
+               path="additions">
+         </menu> -->
+         <action
+               class="instrumentor.popup.actions.InstrumentAction"
+               enablesFor="+"
+               id="Instr.action1"
+               label="Instrument">
+                <!--menubarPath="Instr.menu1/group"> -->
+         </action>
+      </objectContribution>
+
+   </extension>
+
+</plugin>
+

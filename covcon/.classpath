@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="eval"/>
+	<classpathentry kind="src" path="tests"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/tools.jar"/>
+	<classpathentry kind="lib" path="lib/jpf.jar" sourcepath="/home/m/temp/jpf-core/src"/>
+	<classpathentry kind="lib" path="lib/testSkeleton.jar"/>
+	<classpathentry kind="lib" path="lib/bcel-5.2.jar"/>
+	<classpathentry kind="lib" path="lib/asm-4.0.jar"/>
+	<classpathentry kind="lib" path="lib/asm-tree-4.0.jar"/>
+	<classpathentry kind="lib" path="ownLibs/clinitRewriter.jar"/>
+	<classpathentry kind="lib" path="ownLibs/javaModel.jar"/>
+	<classpathentry kind="lib" path="/home/situser/Desktop/Tools/covcon/ownLibs/cfp_detection.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
