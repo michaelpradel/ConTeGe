@@ -1,6 +1,6 @@
 # Efficient Detection of Thread Safety Violations via Coverage-Guided Generation of Concurrent Tests
 
-CovCon is a coverage-guided version of the ConTeGe test generator for finding bugs in thread-safe classes.
+CovCon detects bugs in thread-safe classes via coverage-guided test generation.
 
 ## Abstract
 
@@ -13,8 +13,11 @@ A paper on CovCon has been accepted as a full research paper at ICSE 2017.
 ## Installation and Usage
 
 Check out this project and switch to the CovCon branch:
+
 `git clone https://github.com/michaelpradel/ConTeGe.git`
+
 `cd ConTeGe`
+
 `git checkout CovCon`
 
 The project consists of three parts, each stored in a separate folder:
@@ -25,8 +28,11 @@ The project consists of three parts, each stored in a separate folder:
 ### CovCon
 
 CovCon is the main tool for finding bugs in a given class under test (CUT). To run CovCon on the benchmark classes decribed in the paper, run the following commands:
+
 `cd covcon`
+
 `./scripts/testTool.sh CovCon`
+
 Report files are generated in `concon/report`. An additional result log is generated in `covcon/res`. By default, the timeout is 3,600 seconds. Update `covcon/scripts/testTool.sh` to modify the timeout.
 
 You can add additional benchmark classes by adding them into the `covcon/benchmarks/instrumented` directory. Update `covcon/scripts/testRun.sh` to add analyze benchmark in the script. Some example benchmarks from our evaluation have already been added to the `covcon/benchmarks/instrumented` and `covcon/scripts/testRun.sh`.
