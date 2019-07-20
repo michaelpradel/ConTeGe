@@ -27,5 +27,11 @@ See the [SpeedGun branch](https://github.com/michaelpradel/ConTeGe/tree/SpeedGun
 by Michael Pradel, Markus Huggler, and Thomas R. Gross  
 at International Symposium on Software Testing and Analysis (ISSTA), 2014
 
+### Instructions for running ConTeGe
 
+To run a pre-built version equivalent to the PLDI'12 paper, run the following from the `ConTeGe` direcory:
+
+`./scripts/ClassTester_pre-built.sh`
+
+It will test the `XYSeries` class from the benchmarks directory and (hopefully) find a thread safety violation after a few seconds. To test other classes and run more benchmarks, see the comments in this and the other scripts.
 
